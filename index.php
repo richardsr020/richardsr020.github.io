@@ -1,4 +1,14 @@
-<?php  require "assets/partials/header.php"; ?>
+<?php  require "assets/partials/header.php";
+       require "model/Model.php";
+       require "model/User.php";
+       require "model/Router.php"; ?>
+<?php
+if(isset($_POST)&& !empty($_POST)){
+  print_r($_POST);
+  Rout::logIn();
+ 
+}
+?>
 
    <style>
      .col-md-6{
@@ -33,7 +43,10 @@
         <li><a href="#section4">Courses</a></li>
         <!-- <li><a href="#section5">Video</a></li> -->
         <li><a href="#section6"><i class="fas fa-bell"></i></a></li>
-        <li><a href="public/logIn.php" class="external">Admin</a></li>
+        <?php if(isset($_SESSION['name'])){
+          ?><li><a href="public/dashboard/index.html" class="external">Admin</a></li><?php
+        }?>
+        
       </ul>
     </nav>
   </header>
@@ -419,28 +432,23 @@
         <div class="col-md-5">
           <div class="right-content">
             <div class="top-content">
-              <h6>Register your free account and <em>get immediate</em> access to online courses</h6>
+              <h6> connection<em>au panneau </em> d'administation</h6>
             </div>
-            <form id="contact" action="" method="get">
+            <form id="contact" action="" method="post">
               <div class="row">
                 <div class="col-md-12">
                   <fieldset>
-                    <input name="name" type="text" class="form-control" id="name" placeholder="Your Name" required="">
+                    <input name="phone" type="text" class="form-control" id="name" placeholder="Admin phone" required="">
                   </fieldset>
                 </div>
                 <div class="col-md-12">
                   <fieldset>
-                    <input name="email" type="text" class="form-control" id="email" placeholder="Your Email" required="">
+                    <input name="pass" type="password" class="form-control" id="password" placeholder="Mot de passe " required="">
                   </fieldset>
                 </div>
                 <div class="col-md-12">
                   <fieldset>
-                    <input name="phone-number" type="text" class="form-control" id="phone-number" placeholder="Your Phone Number" required="">
-                  </fieldset>
-                </div>
-                <div class="col-md-12">
-                  <fieldset>
-                    <button type="submit" id="form-submit" class="button">Get it now</button>
+                    <button type="submit" id="form-submit" class="button">Connexion</button>
                   </fieldset>
                 </div>
               </div>

@@ -33,14 +33,13 @@ class Rout{
             $hashPassWord = sha1($pass);
             $user = new User();
             $userdata = $user->getByPhone($phone);
-            
-               if($userdata[0]['pass'] == $hashPassWord){
+               if($userdata[0]['password'] == $pass){
                    $_SESSION['id'] = $userdata[0]['id'];
                    $_SESSION['username'] = $userdata[0]['name'];
+                   $_SESSION['userphone'] = $userdata[0]['phone'];
                    $_SESSION['userprofile'] = $userdata[0]['profile'];
-                   $_SESSION['usermail'] = $userdata[0]['mail'];
-
-                   header("location:localhost/nano-api/index.php");
+                   
+                   header("location:public/dashboard/index.html");
   
                 }else{
                    unset($userdata);
@@ -64,25 +63,25 @@ class Rout{
         print_r($profileData);
     }
 
-    public static function getPrivateChatWith($destId){
-        $messages = new Msg('',$destId);
-        if($messages->getByMarkup()){
-            return $privateChat = $messages->getByMarkup();
+    // public static function getPrivateChatWith($destId){
+    //     $messages = new Msg('',$destId);
+    //     if($messages->getByMarkup()){
+    //         return $privateChat = $messages->getByMarkup();
         
-        }
+    //     }
 
-    }
+    // }
 
-    public static function getChat(){
-        $messages = new Msg();
-        if($messages->getAll()){
-            $chat = $messages->getAll();
-            // print_r($chat);
-        }
+    // public static function getChat(){
+    //     $messages = new Msg();
+    //     if($messages->getAll()){
+    //         $chat = $messages->getAll();
+    //         // print_r($chat);
+    //     }
 
-    }
-    /**
-     * the function logOut clean a current $_SESSION and returne 
+    // }
+    // /**
+     /* the function logOut clean a current $_SESSION and returne 
      * the link of logInPage 
      */
     public static function logOut(){
@@ -110,33 +109,33 @@ class Rout{
             $file->upload();
         }
     }
-    public static function msgSend(){
+    public static function postMsg(){
             
-            if(!empty($_POST['textMsg'])){
-                $msg = new Msg($_POST['textMsg'], (int)$_GET['idDest']);
-                $msg->send();
+            if(!empty($_POST['title'])){
+                $msg = new Msg($_POST['content'],$_POST['title'] );
+                $msg->post();
                 header("location: index.php");
             }
             else{
                 echo 'message Filed';
             }
     }
-    public static function getFreinds(){
-        $freinds = new Contact();
-        $freinds->getAll($_SESSION['id']);
-        return $freinds->getAll($_SESSION['id']);
+    // public static function getFreinds(){
+    //     $freinds = new Contact();
+    //     $freinds->getAll($_SESSION['id']);
+    //     return $freinds->getAll($_SESSION['id']);
 
         
-    }
-    public static function addNewContact(){
-        $user = new User();
+    // }
+    // public static function addNewContact(){
+    //     $user = new User();
 
-        $NewFreind = $user->getByPhone($_POST['phone']);
-        $contact = new Contact($NewFreind[0]['id']);
-        $contact->creat();
-        header('location: ../../../index.php');
+    //     $NewFreind = $user->getByPhone($_POST['phone']);
+    //     $contact = new Contact($NewFreind[0]['id']);
+    //     $contact->creat();
+    //     header('location: ../../../index.php');
        
-    }
+    // }
 }
 
 ?>

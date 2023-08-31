@@ -2,13 +2,13 @@
 // require 'Model.php';
 // require 'Contact.php';
 class Msg extends Model{
-    private $text;
-    private $destId;
+    private $title;
+    private $content;
     private $authorId;
 
-    public function __construct($textMessage=null,$destId=null){
-        $this->text = $textMessage;
-        $this->destId = $destId;
+    public function __construct($textMessage=null, $title=null){
+        $this->content = $textMessage;
+        $this->title = $title;
         $this->authorId = $_SESSION['id'];
 
     }
@@ -17,16 +17,16 @@ class Msg extends Model{
      * if $reverse has 0, the function return a correct markup ex(12)
      * else if $reverse has 1, the function return a reverse markup ex(21) 
      */
-    public function makMarkup($reverse=0){
-        if($reverse == 0){
-            return $this->authorId.$this->destId;
-        }elseif($reverse == 1){
-            return $this->destId.$this->authorId;
-        }
+    // public function makMarkup($reverse=0){
+    //     if($reverse == 0){
+    //         return $this->authorId.$this->destId;
+    //     }elseif($reverse == 1){
+    //         return $this->destId.$this->authorId;
+    //     }
         
-    }
+    // }
     
-    public function send(){
+    public function post(){
         /**
          * here is insersion of messages in chat table, 
          * after that there is a private function called into the 
@@ -34,33 +34,27 @@ class Msg extends Model{
          * of message and destinator it the function <<createContact>>
          */
         $this->connect();
-        $newMarkup = (int)$this->makMarkup();
-        $ps = $this->pdo->prepare("INSERT INTO chat(text,id_author,id_destination,markup,is_read) VALUES(?,?,?,?,?)");
-        $ps->execute([$this->text,$this->authorId,$this->destId,$newMarkup,0]);
-        print_r(gettype($newMarkup));
-        //We verify before if this the contact do not exist 
-        /**
-         * the call of createContact
-         */
-        $contact = new Contact($this->authorId, $this->destId);
-        $contact->creat($newMarkup);
+        //$newMarkup = (int)$this->makMarkup();
+        $ps = $this->pdo->prepare("INSERT INTO posts(title,content,id_author) VALUES(?,?,?)");
+        $ps->execute([$this->title,$this->content,$this->authorId]);
+        
 
     }
-    public function getByMarkup(){
-        $this->connect();
-        $markup = $this->makMarkup();
-        $markupReverse = $this->makMarkup(1);
-        $ps = $this->pdo->prepare("SELECT * FROM chat WHERE markup=? OR markup=?");
-        $ps->execute([$markup,$markupReverse]);
-        $result = $ps->fetchAll(PDO::FETCH_ASSOC);
-        if($result){
-            return $result;
-        }
-        else{
-            echo 'nothig'; 
-            return false;}
+    // public function getByMarkup(){
+    //     $this->connect();
+    //     $markup = $this->makMarkup();
+    //     $markupReverse = $this->makMarkup(1);
+    //     $ps = $this->pdo->prepare("SELECT * FROM chat WHERE markup=? OR markup=?");
+    //     $ps->execute([$markup,$markupReverse]);
+    //     $result = $ps->fetchAll(PDO::FETCH_ASSOC);
+    //     if($result){
+    //         return $result;
+    //     }
+    //     else{
+    //         echo 'nothig'; 
+    //         return false;}
 
-    }
+    // }
     /**
      * theire we can get all the messages sent to the
      * current user
@@ -69,8 +63,8 @@ class Msg extends Model{
     public function getAll(){
         $this->connect();
         $myId = $this->authorId;
-        $ps = $this->pdo->prepare("SELECT * FROM chat WHERE id_destination=?");
-        $ps->execute([$myId]);
+        $ps = $this->pdo->prepare("SELECT * FROM posts");
+        $ps->execute();
         $result = $ps->fetchAll(PDO::FETCH_ASSOC);
         
         if($result){
@@ -81,7 +75,7 @@ class Msg extends Model{
     }
     public function update($field,$value,$id){
         $this->connect();
-        $ps = $this->pdo->prepare("UPDATE chat SET $field = '$value' WHERE id =?");
+        $ps = $this->pdo->prepare("UPDATE posts SET $field = '$value' WHERE id =?");
         $ps->execute([$id]); 
         
     }

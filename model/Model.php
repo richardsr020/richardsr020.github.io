@@ -8,7 +8,7 @@ class Model{
 
    public $conn;
 
-   public $sdn = "mysql:host=localhost;dbname=administration";
+   public $sdn = "mysql:host=localhost;dbname=himbi";
 
    public function connect(){
 

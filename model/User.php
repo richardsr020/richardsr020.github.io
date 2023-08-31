@@ -4,12 +4,12 @@ class User extends Model{
     private $name;
     private $passW;
     private $phonneN;
-    private $mail;
-    public function __construct($userName=null, $password=null, $phonneN=null, $mailAdress=null){
+    
+    public function __construct($userName=null, $password=null, $phonneN=null){
        $this->name = $userName;
        $this->passW = $password;
        $this->phonneN=$phonneN;
-       $this->mail = $mailAdress;  
+        
     }
     public function getById($id){
         $this->connect();
@@ -49,14 +49,15 @@ class User extends Model{
             }
             else{
                 return false;
+                die;
             }
     }
    
     public function insert(){
         //$this->connect();
         if(empty($this->getByPhone($this->phonneN))){
-            $ps = $this->pdo->prepare("INSERT INTO user(name,phone,pass,mail) VALUES(?,?,?,? )");
-            $ps->execute([$this->name,$this->phonneN,$this->passW,$this->mail]);
+            $ps = $this->pdo->prepare("INSERT INTO user(name,phone,pass,) VALUES(?,?,? )");
+            $ps->execute([$this->name,$this->phonneN,$this->passW]);
             return true;
         } else{
             return false;
@@ -126,12 +127,12 @@ class User extends Model{
         }
     }
 
-     public function completData ($name, $mail,$id)
+     public function completData ($name,$id)
 
      { 
             $this->connect();
             $ps = $this->pdo->prepare("UPDATE user SET name =?, mail=? WHERE id =?");
-            $ps->execute([$name, $mail, $id]);
+            $ps->execute([$name, $id]);
 
      }
     
